@@ -701,13 +701,11 @@
           </form>
 
           <div class="confirm-panel" id="confirmPanel">
-            <h3>Thanks, <span id="cName">there</span> — here's your request</h3>
+            <h3>Request received, <span id="cName">there</span></h3>
             <p id="cSummary"></p>
+            <p>We've got it — our team will confirm your slot by phone or WhatsApp shortly.</p>
             <div class="confirm-actions">
-              <a class="btn btn-secondary" id="cWhatsapp" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
-              <a class="btn btn-ghost" id="cCall" href="tel:+910000000000">Call instead</a>
-              <a class="btn btn-ghost" id="cEmail" href="#">Email instead</a>
-              <button class="btn btn-ghost" id="cEdit" type="button">Edit details</button>
+              <button class="btn btn-primary" id="cHome" type="button">Go back home</button>
             </div>
           </div>
         </div>
@@ -992,6 +990,7 @@
     a.addEventListener('click', function(e){
       e.preventDefault();
       var target = a.dataset.nav;
+      if(target === 'appointment') resetApptView();
       if(a.dataset.service){
         var sel = document.getElementById('f-service');
         if(sel){ sel.value = a.dataset.service; }
@@ -1041,33 +1040,25 @@
 
     logToSheet({ name: name, phone: phone, vehicle: vehicle, service: service, date: date, time: time, notes: notes });
 
-    var lines = [
-      'Appointment request — Bhoomi Enterprises',
-      'Name: ' + name,
-      'Phone: ' + phone,
-      'Vehicle: ' + vehicle,
-      'Service: ' + service,
-      'Preferred date: ' + date,
-      'Preferred time: ' + time
-    ];
-    if(notes) lines.push('Notes: ' + notes);
-    var message = lines.join('\n');
-
     document.getElementById('cName').textContent = name;
     document.getElementById('cSummary').textContent =
       vehicle + ' — ' + service + ', requested for ' + date + ' (' + time + ').';
-    document.getElementById('cWhatsapp').href = 'https://wa.me/910000000000?text=' + encodeURIComponent(message);
-    document.getElementById('cEmail').href = 'mailto:info@bhoomienterprises.example?subject=' +
-      encodeURIComponent('Appointment request — ' + name) + '&body=' + encodeURIComponent(message);
 
     form.classList.add('hide');
     confirmPanel.classList.add('show');
     confirmPanel.scrollIntoView({behavior:'smooth', block:'start'});
+    form.reset();
   });
 
-  document.getElementById('cEdit').addEventListener('click', function(){
+  function resetApptView(){
+    form.reset();
     confirmPanel.classList.remove('show');
     form.classList.remove('hide');
+  }
+
+  document.getElementById('cHome').addEventListener('click', function(){
+    resetApptView();
+    showPage('home');
   });
 
   /* footer year */
