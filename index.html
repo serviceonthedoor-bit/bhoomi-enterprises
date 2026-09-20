@@ -616,12 +616,16 @@
                 <input type="text" id="f-name" name="name" required autocomplete="name">
               </div>
               <div class="field">
-                <label for="f-phone">Phone number <span class="req">*</span></label>
-                <input type="tel" id="f-phone" name="phone" required autocomplete="tel" placeholder="10-digit mobile number">
+                <label for="f-email">Email address</label>
+                <input type="email" id="f-email" name="email" autocomplete="email" placeholder="you@example.com">
               </div>
             </div>
 
             <div class="field-row">
+              <div class="field">
+                <label for="f-phone">Phone number <span class="req">*</span></label>
+                <input type="tel" id="f-phone" name="phone" required autocomplete="tel" placeholder="10-digit mobile number">
+              </div>
               <div class="field">
                 <label for="f-vehicle">Vehicle type <span class="req">*</span></label>
                 <select id="f-vehicle" name="vehicle" required>
@@ -635,9 +639,11 @@
                   <option>Other</option>
                 </select>
               </div>
-              <div class="field">
-                <label for="f-service">Service needed <span class="req">*</span></label>
-                <select id="f-service" name="service" required>
+            </div>
+
+            <div class="field">
+              <label for="f-service">Service needed <span class="req">*</span></label>
+              <select id="f-service" name="service" required>
                   <option value="" disabled selected>Select a service</option>
                   <optgroup label="Sales">
                     <option>Sales: High-quality EVs</option>
@@ -673,7 +679,6 @@
                   <option>Not sure / general enquiry</option>
                 </select>
               </div>
-            </div>
 
             <div class="field-row">
               <div class="field">
@@ -724,6 +729,7 @@
             <div class="info-row"><span>Hours</span><b>Mon–Sat, 9–7</b></div>
             <div class="info-row"><span>Phone</span><b>+91 00000 00000</b></div>
             <div class="info-row"><span>WhatsApp</span><b>+91 00000 00000</b></div>
+            <div class="info-row"><span>Support email</span><b>info@bhoomienterprises.example</b></div>
           </div>
         </div>
       </div>
@@ -1010,7 +1016,7 @@
   /* Paste your deployed Google Apps Script Web App URL below to log every
      submission into a Google Sheet. Leave it as-is to skip sheet logging —
      the WhatsApp / call / email handoff below still works either way. */
-  var SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw6HsV4GSRecsG_UC_pQfFe9s0FS4s1nh8Qs_vHP3TgYPoUANtuRbGmO2Tn1VEoG8K0BA/exec';
+  var SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzN3zHEvywvBLtQD6oV_ehPovyyB2z2IMWyE7xh4Lg3edMvGiuhbsltLH_CH1dK8nvVGQ/exec';
 
   function logToSheet(payload){
     if(!SHEET_ENDPOINT || SHEET_ENDPOINT.indexOf('PASTE_') === 0) return;
@@ -1031,6 +1037,7 @@
     if(!form.checkValidity()){ form.reportValidity(); return; }
 
     var name = document.getElementById('f-name').value.trim();
+    var email = document.getElementById('f-email').value.trim();
     var phone = document.getElementById('f-phone').value.trim();
     var vehicle = document.getElementById('f-vehicle').value;
     var service = document.getElementById('f-service').value;
@@ -1038,11 +1045,12 @@
     var time = document.getElementById('f-time').value;
     var notes = document.getElementById('f-notes').value.trim();
 
-    logToSheet({ name: name, phone: phone, vehicle: vehicle, service: service, date: date, time: time, notes: notes });
+    logToSheet({ name: name, email: email, phone: phone, vehicle: vehicle, service: service, date: date, time: time, notes: notes });
 
     document.getElementById('cName').textContent = name;
-    document.getElementById('cSummary').textContent =
-      vehicle + ' — ' + service + ', requested for ' + date + ' (' + time + ').';
+    var summary = vehicle + ' — ' + service + ', requested for ' + date + ' (' + time + ').';
+    if(email) summary += ' A confirmation email is on its way to ' + email + '.';
+    document.getElementById('cSummary').textContent = summary;
 
     form.classList.add('hide');
     confirmPanel.classList.add('show');
